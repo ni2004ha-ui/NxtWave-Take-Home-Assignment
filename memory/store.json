@@ -1,0 +1,99 @@
+{
+  "patches": {
+    "L4_JARGON_DEFINED": {
+      "fail_count": 3,
+      "rule": "Define every technical term, acronym, and jargon word (such as \"AI\", \"indexing\", \"model\") in plain words before first use, including in bullets and headings. Put any definitions block before text that uses its terms. Say what a reused word refers to."
+    },
+    "L5_PLAIN_ENGLISH": {
+      "fail_count": 3,
+      "rule": "Use plain, literal words a limited-English reader knows. Replace idioms (\"for life\"), phrasal verbs (\"left out\"), words with rare or multiple meanings (\"paper\" as research article), and abstract or formal terms (\"analogy,\" \"guarantee\") with simple wording (\"forever,\" \"not used,\" \"make sure\"). Define unavoidable technical terms on first use."
+    },
+    "L2_NO_INVENTED_SPECIFICS": {
+      "fail_count": 1,
+      "rule": "Use only details the fact sheet supports. Don't invent specifics such as product names (ChatGPT), numbers, dates, people, or examples. If the sheet lacks a detail, use a general description instead, like \"many chat programs,\" or leave the sentence out."
+    },
+    "L6_RUNNING_EXAMPLE": {
+      "fail_count": 1,
+      "rule": "Make running examples concrete end to end: show the actual made-up text of every item (e.g., \"Chunk 2: Exam fee due 10 March\"), the specific selections made, the full prompt or input, and the final output. Never just describe steps (\"it finds the rule\") without displaying the real content."
+    },
+    "L7_ANALOGY_SOUND": {
+      "fail_count": 1,
+      "rule": "When using an analogy, map every actor to its real counterpart and check who performs each step. Don't give a role (like \"student finds pages\") to a component that doesn't do it (the retriever does). Add a helper role if needed."
+    },
+    "L8_ORDER_NO_FORWARD_REFS": {
+      "fail_count": 1,
+      "rule": "Define every term before the first sentence that uses it. Put \"words we need first\" glossaries at the very start, ahead of any step list or explanation. Scan earlier text for undefined terms (e.g., \"AI\", \"prompt\") and move their definitions up."
+    }
+  },
+  "fail_counts": {
+    "L4_JARGON_DEFINED": 3,
+    "L5_PLAIN_ENGLISH": 3,
+    "L2_NO_INVENTED_SPECIFICS": 1,
+    "L6_RUNNING_EXAMPLE": 1,
+    "L7_ANALOGY_SOUND": 1,
+    "L8_ORDER_NO_FORWARD_REFS": 1
+  },
+  "feedback": [],
+  "runs": [
+    {
+      "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+      "status": "PASSED",
+      "attempts_used": 3,
+      "synthetic": false,
+      "finished_at": "2026-10-21T14:10:15+00:00",
+      "first_try_failures": [
+        "L4_JARGON_DEFINED",
+        "L5_PLAIN_ENGLISH"
+      ]
+    },
+    {
+      "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+      "status": "PASSED",
+      "attempts_used": 2,
+      "synthetic": true,
+      "finished_at": "2026-10-21T14:13:47+00:00",
+      "first_try_failures": [
+        "L1_ACCURATE",
+        "L2_NO_INVENTED_SPECIFICS",
+        "L5_PLAIN_ENGLISH",
+        "L8_ORDER_NO_FORWARD_REFS",
+        "L9_STANDALONE_AND_MISCONCEPTION"
+      ]
+    },
+    {
+      "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+      "status": "NEEDS_HUMAN_REVIEW",
+      "attempts_used": 3,
+      "synthetic": false,
+      "finished_at": "2026-10-21T14:32:23+00:00",
+      "first_try_failures": [
+        "L2_NO_INVENTED_SPECIFICS",
+        "L6_RUNNING_EXAMPLE",
+        "L7_ANALOGY_SOUND"
+      ]
+    },
+    {
+      "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+      "status": "PASSED",
+      "attempts_used": 3,
+      "synthetic": false,
+      "finished_at": "2026-10-21T14:46:22+00:00",
+      "first_try_failures": [
+        "L4_JARGON_DEFINED",
+        "L8_ORDER_NO_FORWARD_REFS"
+      ]
+    },
+    {
+      "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+      "status": "PASSED",
+      "attempts_used": 2,
+      "synthetic": true,
+      "finished_at": "2026-10-21T14:49:43+00:00",
+      "first_try_failures": [
+        "L1_ACCURATE",
+        "L5_PLAIN_ENGLISH",
+        "L9_STANDALONE_AND_MISCONCEPTION"
+      ]
+    }
+  ]
+}

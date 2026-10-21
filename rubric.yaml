@@ -1,0 +1,92 @@
+# Rubric v1. Every check is hard PASS/FAIL. All checks must pass to ship. No partial credit.
+# type: code  -> decided by deterministic Python (agent/checks.py), no LLM involved
+# type: llm   -> decided by the judge model, which must quote evidence before giving a verdict
+# vote: any      -> FAIL if ANY judge sample fails it (safety-critical: facts, coverage, example, misconception)
+# vote: majority -> FAIL only if MORE THAN HALF of the judge samples fail it (subjective: wording, flow, analogy)
+version: 1
+checks:
+  # ---------- Code checks: cheap, repeatable, cannot be sweet-talked ----------
+  - id: D1_STRUCTURE
+    type: code
+    dimension: coherent teaching flow
+    question: Are all 7 required sections present, in the required order?
+  - id: D2_LENGTH
+    type: code
+    dimension: beginner-friendly
+    question: Is the lesson between 550 and 1500 words (short enough to finish, long enough to teach)?
+  - id: D3_SENTENCE_LENGTH
+    type: code
+    dimension: beginner-friendly language
+    question: Is the average sentence 16 words or fewer, and the longest sentence 28 words or fewer?
+  - id: D4_LONG_WORDS
+    type: code
+    dimension: beginner-friendly language
+    question: Are words with 13 or more letters 2% or less of all words?
+  - id: D5_GLOSSARY
+    type: code
+    dimension: clear, no unexplained jargon
+    question: Does the Key words section define at least 6 terms?
+  - id: D6_EXAMPLE_DEPTH
+    type: code
+    dimension: teaches by example
+    question: Does the example section have at least 80 words?
+  - id: D7_QUICK_CHECK
+    type: code
+    dimension: teaches by example
+    question: Does the Quick check section contain at least 3 questions?
+
+  # ---------- Judge checks: need meaning, not counting ----------
+  - id: L1_ACCURATE
+    type: llm
+    vote: any
+    dimension: accurate & grounded
+    question: Is every factual claim consistent with the fact sheet, with nothing on the never-claim list?
+    fail_when: Any claim contradicts the fact sheet, or appears on the never-claim list (for example, saying RAG retrains the model).
+  - id: L2_NO_INVENTED_SPECIFICS
+    type: llm
+    vote: any
+    dimension: accurate & grounded
+    question: Is the lesson free of made-up numbers, dates, names, products, or citations that are not in the fact sheet?
+    fail_when: A specific number, date, name, or source appears that the fact sheet does not support. (Clearly invented example data, like a made-up college notice date inside the worked example, is fine.)
+  - id: L3_COVERAGE
+    type: llm
+    vote: any
+    dimension: covers the key points
+    question: Does the lesson cover all six must-cover points in the fact sheet?
+    fail_when: Any must-cover point is missing or only named without being explained.
+  - id: L4_JARGON_DEFINED
+    type: llm
+    vote: majority
+    dimension: clear, no unexplained jargon
+    question: Is every technical term explained in plain words at or before its first use?
+    fail_when: Any technical term (for example LLM, embedding, vector, prompt, cosine similarity, API, token) is used before it is explained.
+  - id: L5_PLAIN_ENGLISH
+    type: llm
+    vote: majority
+    dimension: beginner-friendly language
+    question: Could a 12th-grade student who learned in a non-English-medium school read this without a dictionary?
+    fail_when: The lesson uses idioms, slang, phrasal verbs with hidden meaning, or rare words (for example "under the hood", "ballpark", "leverage", "paradigm") without explaining them.
+  - id: L6_RUNNING_EXAMPLE
+    type: llm
+    vote: any
+    dimension: teaches by example
+    question: Does one concrete example follow a real question through every step of RAG, from the user's question to the final answer?
+    fail_when: The example skips a step, stays abstract, or is only a one-line mention.
+  - id: L7_ANALOGY_SOUND
+    type: llm
+    vote: majority
+    dimension: teaches by example
+    question: Is there an everyday analogy, and is it correct and not misleading?
+    fail_when: There is no analogy, or the analogy implies something false about RAG (for example, that the AI learns the book).
+  - id: L8_ORDER_NO_FORWARD_REFS
+    type: llm
+    vote: majority
+    dimension: coherent teaching flow
+    question: Does each idea build only on ideas already taught earlier in the lesson?
+    fail_when: A concept is relied on before it is introduced, or the order of ideas would confuse a beginner.
+  - id: L9_STANDALONE_AND_MISCONCEPTION
+    type: llm
+    vote: any
+    dimension: coherent teaching flow
+    question: Is the lesson fully standalone (assumes zero AI knowledge) and does it clearly correct the "RAG retrains the model" misunderstanding?
+    fail_when: It assumes prior AI or coding knowledge, or never states that the model itself does not change.

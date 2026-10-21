@@ -1,0 +1,514 @@
+{
+  "topic": "Introduction to RAG (Retrieval-Augmented Generation)",
+  "status": "PASSED",
+  "attempts_used": 3,
+  "synthetic": false,
+  "finished_at": "2026-10-21T14:10:15+00:00",
+  "final_lesson": "# Introduction to RAG\n\n## 1. What is RAG?\n\n**AI** means Artificial Intelligence. These are computer programs that do tasks that usually need human thinking.\n\nAn **LLM** is one kind of AI program. It reads and writes text. LLM means Large Language Model. AI chat tools use an LLM to write their answers.\n\nRAG means **Retrieval-Augmented Generation**. Let us learn the three words.\n\n- **Retrieval** means finding. The system finds useful text from a collection of documents.\n- **Augmented** means made bigger or better. The system adds that text to your question.\n- **Generation** means writing. The LLM writes an answer.\n\nSo RAG is a method with three steps. First, find useful text. Second, add it to the question. Third, let the LLM write the answer.\n\nThe name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\n\n**An everyday analogy: the open-book exam.**\nThink of a student in an exam. In a closed-book exam, the student uses only memory. In an open-book exam, the student looks at the right page and then writes the answer.\n\nAn LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\n\n## 2. Why do we need RAG?\n\nAn LLM learns from text. This text is called its **training data**. RAG helps with three problems.\n\n**Problem 1: The knowledge cutoff.**\nTraining data stops at one date. This date is called the **cutoff date**. The LLM does not know anything that happened after it.\n\n**Problem 2: Private data.**\nThe LLM has not seen your private files. These can be company files, school notices, or your own notes. It cannot answer questions about them.\n\n**Problem 3: Hallucination.**\nSometimes an LLM writes a false answer. It still sounds confident and correct. This is called **hallucination**.\n\nRAG gives the LLM real text to read before it answers. This is called **grounding**. Grounding means basing the answer on real text. It reduces hallucination. But it does not remove it completely.\n\nRAG has two more benefits:\n\n- To update knowledge, you only update your documents. You do not need to train the LLM again.\n- The system can show the pieces of text it used. People can then check the source.\n\n## 3. How RAG works, step by step\n\nRAG has two parts. The first part is done before anyone asks a question. The second part is done every time someone asks.\n\n### Part A: Indexing (preparing the documents)\n\n**Indexing** means preparing the documents and storing them. We do this so we can search them later. It has three steps.\n\n**Step 1: Split into chunks.**\nA **chunk** is a small piece of a document. A long document is cut into many chunks. Each chunk is short and has one main idea.\n\n**Step 2: Make an embedding for each chunk.**\nA **vector** is a list of numbers. An **embedding** is a vector that shows the meaning of a text. Texts with similar meaning get similar numbers.\n\nThink of a map of ideas. Two shops close together on a city map are near each other. In the same way, texts with similar meaning are placed close together on this imaginary map. Texts with different meaning are placed far apart.\n\n**Step 3: Store the embeddings.**\nWe keep all embeddings in a **vector database**. This is a special store. It is built to find similar embeddings quickly. It is *not* the LLM. It only stores and searches. It does not write answers.\n\n### Part B: Question time (runtime)\n\n**Runtime** means the time when the system is answering a question. A **query** is the user's question. At runtime, three steps happen.\n\n**Step 4: Retrieve.**\nThe system makes an embedding of the question. It compares this with the stored chunk embeddings. This is called **similarity search**. It picks the **top-k** chunks. This means the best few matches. Here *k* is just a number, such as \"the best three\".\n\nThe search uses meaning. So it does not need exactly the same words. A question can use different words from the document and still find the right chunk.\n\n**Step 5: Augment.**\nA **prompt** is the text we send to the LLM. The system joins the question and the chosen chunks in one prompt.\n\n**Step 6: Generate.**\nThe LLM reads the prompt. It writes an answer using the chunks as its source.\n\n**Important:** RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\n\n## 4. One full example\n\nThis is an imaginary example. A school puts its notices into a RAG system.\n\n**Before questions (indexing):**\n\n1. The school has a long notice about the library. The system splits it into chunks.\n2. One chunk says: \"The library is open on weekdays and Saturday morning. It is closed on Sunday.\"\n3. Another chunk says: \"Students can borrow books for two weeks.\" *(This chunk is about borrowing, not about days.)*\n4. The system makes an embedding for each chunk. It stores them in the vector database.\n\n**A student asks:** \"Can I go to the library on Sunday?\"\n\n1. **Retrieve:** The system makes an embedding of the question. It searches the vector database. The chunk about library days is closest in meaning. It is chosen as a top match.\n2. **Augment:** The system builds a prompt. It has the student's question and the chosen chunk.\n3. **Generate:** The LLM reads the prompt. It writes: \"No. The library is closed on Sunday. It is open on weekdays and Saturday morning.\"\n\nThe LLM never saw this notice during its training. It still answered correctly. This is because RAG gave it the right text at the right time. The system can also show the chunk it used. The student can then check it.\n\n## 5. Common mistake to avoid\n\n**Mistake 1: \"RAG teaches the model new things.\"**\nThis is wrong. RAG does not retrain the model. It does not change the model at all. It only adds text to the prompt for each question.\n\nFine-tuning is a different method. It *does* change the model. It costs more. It is better for style and skills than for facts that change often.\n\n**Mistake 2: \"RAG always gives correct answers.\"**\nThis is also wrong. RAG reduces hallucination. It does not remove it. The quality of the answer depends on two things:\n\n- The quality of your documents. Wrong documents give wrong answers.\n- The retrieval step. If it finds the wrong chunk, the answer can be wrong.\n\n## 6. Key words (glossary)\n\n- **AI**: Artificial Intelligence. Computer programs that do tasks that usually need human thinking.\n- **LLM**: A kind of AI program that reads and writes text. The name means Large Language Model.\n- **RAG**: A method that finds useful text, adds it to the prompt, and then lets the LLM write an answer.\n- **Training data**: The text the LLM learned from. It stops at a cutoff date.\n- **Hallucination**: A false answer that sounds confident and correct.\n- **Grounding**: Basing the answer on real text that was found.\n- **Indexing**: Preparing documents and storing them, so they can be searched later.\n- **Chunk**: A small piece of a longer document.\n- **Vector**: A list of numbers.\n- **Embedding**: A vector that shows the meaning of a text.\n- **Vector database**: A special store that keeps embeddings and finds similar ones. It is not the LLM.\n- **Similarity search**: Finding the stored embeddings that are closest in meaning to the question.\n- **Top-k**: The best few matching chunks. The number k tells how many.\n- **Prompt**: The text we send to the LLM. It includes the question and the chosen chunks.\n- **Runtime**: The time when the system is answering a question.\n\n## 7. Quick check\n\n1. What do the three words in Retrieval-Augmented Generation mean?\n2. Name two problems that RAG helps to solve.\n3. What is the difference between a chunk and an embedding?\n4. Does RAG change or retrain the LLM? Explain in one sentence.",
+  "attempts": [
+    {
+      "attempt": 0,
+      "changes": "First draft: used the open-book exam analogy and a school library example that follows one question through retrieve, augment and generate, and covered all must-cover points and the limitations.",
+      "passed": false,
+      "results": [
+        {
+          "id": "D1_STRUCTURE",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "sections found: 7; missing or out of order: none",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D2_LENGTH",
+          "dimension": "beginner-friendly",
+          "passed": true,
+          "evidence": "1171 words (allowed 550-1500)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D3_SENTENCE_LENGTH",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "average 7.4 words, longest 20 words (limits 16 / 28)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D4_LONG_WORDS",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "0.4% of words have 13+ letters (limit 2%)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D5_GLOSSARY",
+          "dimension": "clear, no unexplained jargon",
+          "passed": true,
+          "evidence": "10 glossary terms (need 6+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D6_EXAMPLE_DEPTH",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "example section has 202 words (need 80+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D7_QUICK_CHECK",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "3 questions in Quick check (need 3+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "L1_ACCURATE",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\" / \"Grounding reduces hallucination. But it does not remove it completely.\" / \"It is *not* the LLM. It only stores and searches.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L2_NO_INVENTED_SPECIFICS",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"The name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\" / \"This is an imaginary example. A school puts its notices into a RAG system.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L3_COVERAGE",
+          "dimension": "covers the key points",
+          "passed": true,
+          "evidence": "\"Retrieval means finding... Augmented means made bigger or better... Generation means writing.\" / \"Problem 1: The knowledge cutoff... Problem 2: Private data... Problem 3: Hallucination.\" / \"A chunk is a small piece... An embedding is a list of numbers... vector database\" / \"Step 4: Retrieve... Step 5: Augment... Step 6: Generate.\" / \"4. One full example\" / \"RAG does not change the LLM. It does no",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L4_JARGON_DEFINED",
+          "dimension": "clear, no unexplained jargon",
+          "passed": false,
+          "evidence": "\"We keep all embeddings in a **vector database**.\" / \"Now the three runtime steps happen.\" / \"### Part A: Indexing (before questions)\" / \"It is the 'brain' behind AI chat tools.\"",
+          "reason": "Several technical terms are used without a plain explanation: the word \"vector\" is never explained, \"runtime\" is never explained, \"indexing\" is only labelled \"(before questions)\", and \"AI\" is never defined.",
+          "fix": "Add short definitions: \"A vector is a list of numbers, like an embedding\", \"Runtime means the time when the system is answering a question\", \"Indexing means preparing and storing the documents so they can be searched later\", and \"AI (Artificial Intelligence) means computer programs that do tasks that usually need human thinking\".",
+          "source": "llm"
+        },
+        {
+          "id": "L5_PLAIN_ENGLISH",
+          "dimension": "beginner-friendly language",
+          "passed": false,
+          "evidence": "\"The numbers capture the meaning of the text.\" / \"two texts with similar meaning are near each other in 'meaning space'.\"",
+          "reason": "\"Capture the meaning\" is a figurative phrase, and \"meaning space\" is an unexplained abstract phrase that a reader with limited English may not understand.",
+          "fix": "Rewrite as \"The numbers show the meaning of the text\" and either explain \"meaning space\" as \"an imaginary map where texts with similar meaning are placed close together\" or remove the phrase.",
+          "source": "llm"
+        },
+        {
+          "id": "L6_RUNNING_EXAMPLE",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"The system splits it into chunks.\" ... \"It stores them in the vector database.\" ... \"A student asks: 'Can I go to the library on Sunday?'\" ... \"Retrieve... Augment... Generate: ... 'No. The library is closed on Sunday.'\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L7_ANALOGY_SOUND",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"An LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L8_ORDER_NO_FORWARD_REFS",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"An LLM learns from text. This text is called its training data.\" (before \"You do not need to train the LLM again\") / \"A prompt is the text we send to the LLM.\" (Step 5, before later uses of prompt)",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L9_STANDALONE_AND_MISCONCEPTION",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"Mistake 1: 'RAG teaches the model new things.' This is wrong. RAG does not retrain the model. It does not change the model at all.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        }
+      ],
+      "failed": [
+        {
+          "id": "L4_JARGON_DEFINED",
+          "dimension": "clear, no unexplained jargon",
+          "passed": false,
+          "evidence": "\"We keep all embeddings in a **vector database**.\" / \"Now the three runtime steps happen.\" / \"### Part A: Indexing (before questions)\" / \"It is the 'brain' behind AI chat tools.\"",
+          "reason": "Several technical terms are used without a plain explanation: the word \"vector\" is never explained, \"runtime\" is never explained, \"indexing\" is only labelled \"(before questions)\", and \"AI\" is never defined.",
+          "fix": "Add short definitions: \"A vector is a list of numbers, like an embedding\", \"Runtime means the time when the system is answering a question\", \"Indexing means preparing and storing the documents so they can be searched later\", and \"AI (Artificial Intelligence) means computer programs that do tasks that usually need human thinking\".",
+          "source": "llm"
+        },
+        {
+          "id": "L5_PLAIN_ENGLISH",
+          "dimension": "beginner-friendly language",
+          "passed": false,
+          "evidence": "\"The numbers capture the meaning of the text.\" / \"two texts with similar meaning are near each other in 'meaning space'.\"",
+          "reason": "\"Capture the meaning\" is a figurative phrase, and \"meaning space\" is an unexplained abstract phrase that a reader with limited English may not understand.",
+          "fix": "Rewrite as \"The numbers show the meaning of the text\" and either explain \"meaning space\" as \"an imaginary map where texts with similar meaning are placed close together\" or remove the phrase.",
+          "source": "llm"
+        }
+      ],
+      "failed_ids": [
+        "L4_JARGON_DEFINED",
+        "L5_PLAIN_ENGLISH"
+      ],
+      "regressions": [],
+      "lesson": "# Introduction to RAG\n\n## 1. What is RAG?\n\nAn **LLM** is a computer program that reads and writes text. It is the \"brain\" behind AI chat tools. LLM means Large Language Model.\n\nRAG means **Retrieval-Augmented Generation**. Let us look at the three words.\n\n- **Retrieval** means finding. The system finds useful text from a collection of documents.\n- **Augmented** means made bigger or better. The system adds that text to your question.\n- **Generation** means writing. The LLM writes an answer.\n\nSo RAG is a method with three steps. First, find useful text. Second, add it to the question. Third, let the LLM write the answer.\n\nThe name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\n\n**An everyday analogy: the open-book exam.**\nThink of a student in an exam. In a closed-book exam, the student uses only memory. In an open-book exam, the student looks at the right page and then writes the answer.\n\nAn LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\n\n## 2. Why do we need RAG?\n\nAn LLM learns from text. This text is called its **training data**. RAG helps with three problems.\n\n**Problem 1: The knowledge cutoff.**\nTraining data stops at one date. This date is called the **cutoff date**. The LLM does not know anything that happened after it.\n\n**Problem 2: Private data.**\nThe LLM has not seen your private files. These can be company files, school notices, or your own notes. It cannot answer questions about them.\n\n**Problem 3: Hallucination.**\nSometimes an LLM writes a false answer. It still sounds confident and correct. This is called **hallucination**.\n\nRAG gives the LLM real text to read before it answers. This is called **grounding** the answer. Grounding reduces hallucination. But it does not remove it completely.\n\nRAG has two more benefits:\n\n- To update knowledge, you only update your documents. You do not need to train the LLM again.\n- The answer can point to the pieces of text it used. People can then check the source.\n\n## 3. How RAG works, step by step\n\nRAG has two parts. The first part is done before anyone asks a question. The second part is done every time someone asks.\n\n### Part A: Indexing (before questions)\n\n**Step 1: Split into chunks.**\nA **chunk** is a small piece of a document. A long document is cut into many chunks. Each chunk is short and has one main idea.\n\n**Step 2: Make an embedding for each chunk.**\nAn **embedding** is a list of numbers. The numbers capture the meaning of the text. Texts with similar meaning get similar numbers.\n\nThink of a map. Two shops close together on the map are near each other. In the same way, two texts with similar meaning are near each other in \"meaning space\".\n\n**Step 3: Store the embeddings.**\nWe keep all embeddings in a **vector database**. This is a special store. It is built to find similar embeddings quickly. It is *not* the LLM. It only stores and searches. It does not write answers.\n\n### Part B: Query time (every question)\n\nA **query** is the user's question. Now the three runtime steps happen.\n\n**Step 4: Retrieve.**\nThe system makes an embedding of the question. It compares this with the stored chunk embeddings. This is called **similarity search**. It picks the **top-k** chunks. This means the best few matches. Here *k* is just a number, such as \"the best three\".\n\nBecause the search uses meaning, it does not need exact matching words. A question can use different words from the document and still find the right chunk.\n\n**Step 5: Augment.**\nA **prompt** is the text we send to the LLM. The system puts the question and the chosen chunks together in one prompt.\n\n**Step 6: Generate.**\nThe LLM reads the prompt. It writes an answer using the chunks as its source.\n\n**Important:** RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\n\n## 4. One full example\n\nThis is an imaginary example. A school puts its notices into a RAG system.\n\n**Before questions (indexing):**\n\n1. The school has a long notice about the library. The system splits it into chunks.\n2. One chunk says: \"The library is open on weekdays and Saturday morning. It is closed on Sunday.\"\n3. Another chunk says: \"Students can borrow books for two weeks.\" *(This chunk is about borrowing, not about days.)*\n4. The system makes an embedding for each chunk. It stores them in the vector database.\n\n**A student asks:** \"Can I go to the library on Sunday?\"\n\n1. **Retrieve:** The system makes an embedding of the question. It searches the vector database. The chunk about library days has the closest meaning. It is chosen as a top match.\n2. **Augment:** The system builds a prompt. It has the student's question and the chosen chunk.\n3. **Generate:** The LLM reads the prompt. It writes: \"No. The library is closed on Sunday. It is open on weekdays and Saturday morning.\"\n\nThe LLM never saw this notice during its training. It still answered correctly. This is because RAG gave it the right text at the right time. The system can also show the chunk it used. The student can then check it.\n\n## 5. Common mistake to avoid\n\n**Mistake 1: \"RAG teaches the model new things.\"**\nThis is wrong. RAG does not retrain the model. It does not change the model at all. It only adds text to the prompt for each question.\n\nFine-tuning is a different method. It *does* change the model. It costs more. It is better for style and skills than for facts that change often.\n\n**Mistake 2: \"RAG always gives correct answers.\"**\nThis is also wrong. RAG reduces hallucination. It does not remove it. The answer is only as good as two things:\n\n- The quality of your documents. Wrong documents give wrong answers.\n- The retrieval step. If it finds the wrong chunk, the answer can be wrong.\n\n## 6. Key words (glossary)\n\n- **LLM**: A computer program that reads and writes text. The name means Large Language Model.\n- **RAG**: A method that finds useful text, adds it to the prompt, and then lets the LLM write an answer.\n- **Training data**: The text the LLM learned from. It stops at a cutoff date.\n- **Hallucination**: A false answer that sounds confident and correct.\n- **Chunk**: A small piece of a longer document.\n- **Embedding**: A list of numbers that captures the meaning of a text.\n- **Vector database**: A special store that keeps embeddings and finds similar ones. It is not the LLM.\n- **Similarity search**: Finding the stored embeddings that are closest in meaning to the question.\n- **Top-k**: The best few matching chunks. The number k tells how many.\n- **Prompt**: The text we send to the LLM. It includes the question and the chosen chunks.\n\n## 7. Quick check\n\n1. What do the three words in Retrieval-Augmented Generation mean?\n2. Name two problems that RAG helps to solve.\n3. What is the difference between a chunk and an embedding?\n4. Does RAG change or retrain the LLM? Explain in one sentence."
+    },
+    {
+      "attempt": 1,
+      "changes": "Added plain definitions for AI, vector, indexing and runtime. Replaced \"capture the meaning\" with \"show the meaning\". Replaced \"meaning space\" with a simple map-of-ideas explanation. Added \"grounding\" to the glossary. Kept everything else the same.  (text similarity to previous draft: 89%)",
+      "passed": false,
+      "results": [
+        {
+          "id": "D1_STRUCTURE",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "sections found: 7; missing or out of order: none",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D2_LENGTH",
+          "dimension": "beginner-friendly",
+          "passed": true,
+          "evidence": "1294 words (allowed 550-1500)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D3_SENTENCE_LENGTH",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "average 7.4 words, longest 20 words (limits 16 / 28)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D4_LONG_WORDS",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "0.4% of words have 13+ letters (limit 2%)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D5_GLOSSARY",
+          "dimension": "clear, no unexplained jargon",
+          "passed": true,
+          "evidence": "15 glossary terms (need 6+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D6_EXAMPLE_DEPTH",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "example section has 202 words (need 80+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D7_QUICK_CHECK",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "3 questions in Quick check (need 3+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "L1_ACCURATE",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\" / \"It reduces hallucination. But it does not remove it completely.\" / \"It is *not* the LLM. It only stores and searches.\" / \"The name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L2_NO_INVENTED_SPECIFICS",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"a 2020 research paper by Lewis and others at Facebook AI Research\" / \"Here *k* is just a number, such as \"the best three\".\" / \"This is an imaginary example. A school puts its notices into a RAG system.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L3_COVERAGE",
+          "dimension": "covers the key points",
+          "passed": true,
+          "evidence": "\"Retrieval means finding... Augmented means made bigger or better... Generation means writing.\" / \"Problem 1: The knowledge cutoff... Problem 2: Private data... Problem 3: Hallucination.\" / \"A chunk is a small piece... An embedding is a vector that shows the meaning... We keep all embeddings in a vector database.\" / \"Step 4: Retrieve... Step 5: Augment... Step 6: Generate.\" / \"## 4. One full examp",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L4_JARGON_DEFINED",
+          "dimension": "clear, no unexplained jargon",
+          "passed": true,
+          "evidence": "\"An LLM is one kind of AI program... LLM means Large Language Model.\" / \"A vector is a list of numbers. An embedding is a vector that shows the meaning of a text.\" / \"A prompt is the text we send to the LLM.\" / \"Runtime means the time when the system is answering a question.\" / \"It picks the top-k chunks. This means the best few matches.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L5_PLAIN_ENGLISH",
+          "dimension": "beginner-friendly language",
+          "passed": false,
+          "evidence": "\"The answer is only as good as two things:\" / \"The answer can point to the pieces of text it used.\"",
+          "reason": "The idiom \"only as good as\" and the phrase \"point to\" (meaning \"show which\") carry hidden meanings that a reader with limited English may misread.",
+          "fix": "Replace them with \"The quality of the answer depends on two things:\" and \"The system can show the pieces of text it used.\"",
+          "source": "llm"
+        },
+        {
+          "id": "L6_RUNNING_EXAMPLE",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"A student asks: \"Can I go to the library on Sunday?\"\" / \"Retrieve: The system makes an embedding of the question. It searches the vector database...\" / \"Augment: The system builds a prompt. It has the student's question and the chosen chunk.\" / \"Generate: ... It writes: \"No. The library is closed on Sunday...\"\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L7_ANALOGY_SOUND",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"An LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L8_ORDER_NO_FORWARD_REFS",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"This text is called its training data.\" (before \"You do not need to train the LLM again.\") / \"A vector is a list of numbers. An embedding is a vector...\" (before \"compares this with the stored chunk embeddings\") / \"A prompt is the text we send to the LLM.\" (at Step 5, the first use of the word)",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L9_STANDALONE_AND_MISCONCEPTION",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"AI means Artificial Intelligence. These are computer programs that do tasks that usually need human thinking.\" / \"Mistake 1: \"RAG teaches the model new things.\" This is wrong. RAG does not retrain the model. It does not change the model at all.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        }
+      ],
+      "failed": [
+        {
+          "id": "L5_PLAIN_ENGLISH",
+          "dimension": "beginner-friendly language",
+          "passed": false,
+          "evidence": "\"The answer is only as good as two things:\" / \"The answer can point to the pieces of text it used.\"",
+          "reason": "The idiom \"only as good as\" and the phrase \"point to\" (meaning \"show which\") carry hidden meanings that a reader with limited English may misread.",
+          "fix": "Replace them with \"The quality of the answer depends on two things:\" and \"The system can show the pieces of text it used.\"",
+          "source": "llm"
+        }
+      ],
+      "failed_ids": [
+        "L5_PLAIN_ENGLISH"
+      ],
+      "regressions": [],
+      "lesson": "# Introduction to RAG\n\n## 1. What is RAG?\n\n**AI** means Artificial Intelligence. These are computer programs that do tasks that usually need human thinking.\n\nAn **LLM** is one kind of AI program. It reads and writes text. LLM means Large Language Model. AI chat tools use an LLM to write their answers.\n\nRAG means **Retrieval-Augmented Generation**. Let us look at the three words.\n\n- **Retrieval** means finding. The system finds useful text from a collection of documents.\n- **Augmented** means made bigger or better. The system adds that text to your question.\n- **Generation** means writing. The LLM writes an answer.\n\nSo RAG is a method with three steps. First, find useful text. Second, add it to the question. Third, let the LLM write the answer.\n\nThe name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\n\n**An everyday analogy: the open-book exam.**\nThink of a student in an exam. In a closed-book exam, the student uses only memory. In an open-book exam, the student looks at the right page and then writes the answer.\n\nAn LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\n\n## 2. Why do we need RAG?\n\nAn LLM learns from text. This text is called its **training data**. RAG helps with three problems.\n\n**Problem 1: The knowledge cutoff.**\nTraining data stops at one date. This date is called the **cutoff date**. The LLM does not know anything that happened after it.\n\n**Problem 2: Private data.**\nThe LLM has not seen your private files. These can be company files, school notices, or your own notes. It cannot answer questions about them.\n\n**Problem 3: Hallucination.**\nSometimes an LLM writes a false answer. It still sounds confident and correct. This is called **hallucination**.\n\nRAG gives the LLM real text to read before it answers. This is called **grounding**. Grounding means basing the answer on real text. It reduces hallucination. But it does not remove it completely.\n\nRAG has two more benefits:\n\n- To update knowledge, you only update your documents. You do not need to train the LLM again.\n- The answer can point to the pieces of text it used. People can then check the source.\n\n## 3. How RAG works, step by step\n\nRAG has two parts. The first part is done before anyone asks a question. The second part is done every time someone asks.\n\n### Part A: Indexing (preparing the documents)\n\n**Indexing** means preparing the documents and storing them. We do this so we can search them later. It has three steps.\n\n**Step 1: Split into chunks.**\nA **chunk** is a small piece of a document. A long document is cut into many chunks. Each chunk is short and has one main idea.\n\n**Step 2: Make an embedding for each chunk.**\nA **vector** is a list of numbers. An **embedding** is a vector that shows the meaning of a text. Texts with similar meaning get similar numbers.\n\nThink of a map of ideas. Two shops close together on a city map are near each other. In the same way, texts with similar meaning are placed close together on this imaginary map. Texts with different meaning are placed far apart.\n\n**Step 3: Store the embeddings.**\nWe keep all embeddings in a **vector database**. This is a special store. It is built to find similar embeddings quickly. It is *not* the LLM. It only stores and searches. It does not write answers.\n\n### Part B: Question time (runtime)\n\n**Runtime** means the time when the system is answering a question. A **query** is the user's question. At runtime, three steps happen.\n\n**Step 4: Retrieve.**\nThe system makes an embedding of the question. It compares this with the stored chunk embeddings. This is called **similarity search**. It picks the **top-k** chunks. This means the best few matches. Here *k* is just a number, such as \"the best three\".\n\nThe search uses meaning. So it does not need exactly the same words. A question can use different words from the document and still find the right chunk.\n\n**Step 5: Augment.**\nA **prompt** is the text we send to the LLM. The system puts the question and the chosen chunks together in one prompt.\n\n**Step 6: Generate.**\nThe LLM reads the prompt. It writes an answer using the chunks as its source.\n\n**Important:** RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\n\n## 4. One full example\n\nThis is an imaginary example. A school puts its notices into a RAG system.\n\n**Before questions (indexing):**\n\n1. The school has a long notice about the library. The system splits it into chunks.\n2. One chunk says: \"The library is open on weekdays and Saturday morning. It is closed on Sunday.\"\n3. Another chunk says: \"Students can borrow books for two weeks.\" *(This chunk is about borrowing, not about days.)*\n4. The system makes an embedding for each chunk. It stores them in the vector database.\n\n**A student asks:** \"Can I go to the library on Sunday?\"\n\n1. **Retrieve:** The system makes an embedding of the question. It searches the vector database. The chunk about library days is closest in meaning. It is chosen as a top match.\n2. **Augment:** The system builds a prompt. It has the student's question and the chosen chunk.\n3. **Generate:** The LLM reads the prompt. It writes: \"No. The library is closed on Sunday. It is open on weekdays and Saturday morning.\"\n\nThe LLM never saw this notice during its training. It still answered correctly. This is because RAG gave it the right text at the right time. The system can also show the chunk it used. The student can then check it.\n\n## 5. Common mistake to avoid\n\n**Mistake 1: \"RAG teaches the model new things.\"**\nThis is wrong. RAG does not retrain the model. It does not change the model at all. It only adds text to the prompt for each question.\n\nFine-tuning is a different method. It *does* change the model. It costs more. It is better for style and skills than for facts that change often.\n\n**Mistake 2: \"RAG always gives correct answers.\"**\nThis is also wrong. RAG reduces hallucination. It does not remove it. The answer is only as good as two things:\n\n- The quality of your documents. Wrong documents give wrong answers.\n- The retrieval step. If it finds the wrong chunk, the answer can be wrong.\n\n## 6. Key words (glossary)\n\n- **AI**: Artificial Intelligence. Computer programs that do tasks that usually need human thinking.\n- **LLM**: A kind of AI program that reads and writes text. The name means Large Language Model.\n- **RAG**: A method that finds useful text, adds it to the prompt, and then lets the LLM write an answer.\n- **Training data**: The text the LLM learned from. It stops at a cutoff date.\n- **Hallucination**: A false answer that sounds confident and correct.\n- **Grounding**: Basing the answer on real text that was found.\n- **Indexing**: Preparing documents and storing them, so they can be searched later.\n- **Chunk**: A small piece of a longer document.\n- **Vector**: A list of numbers.\n- **Embedding**: A vector that shows the meaning of a text.\n- **Vector database**: A special store that keeps embeddings and finds similar ones. It is not the LLM.\n- **Similarity search**: Finding the stored embeddings that are closest in meaning to the question.\n- **Top-k**: The best few matching chunks. The number k tells how many.\n- **Prompt**: The text we send to the LLM. It includes the question and the chosen chunks.\n- **Runtime**: The time when the system is answering a question.\n\n## 7. Quick check\n\n1. What do the three words in Retrieval-Augmented Generation mean?\n2. Name two problems that RAG helps to solve.\n3. What is the difference between a chunk and an embedding?\n4. Does RAG change or retrain the LLM? Explain in one sentence."
+    },
+    {
+      "attempt": 2,
+      "changes": "Replaced \"point to\" with \"show\" and \"only as good as\" with \"depends on\"; also changed \"look at the three words\" to \"learn\" and \"puts together\" to \"joins\" to remove other hidden-meaning phrases.  (text similarity to previous draft: 99%)",
+      "passed": true,
+      "results": [
+        {
+          "id": "D1_STRUCTURE",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "sections found: 7; missing or out of order: none",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D2_LENGTH",
+          "dimension": "beginner-friendly",
+          "passed": true,
+          "evidence": "1291 words (allowed 550-1500)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D3_SENTENCE_LENGTH",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "average 7.4 words, longest 20 words (limits 16 / 28)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D4_LONG_WORDS",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "0.4% of words have 13+ letters (limit 2%)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D5_GLOSSARY",
+          "dimension": "clear, no unexplained jargon",
+          "passed": true,
+          "evidence": "15 glossary terms (need 6+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D6_EXAMPLE_DEPTH",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "example section has 202 words (need 80+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "D7_QUICK_CHECK",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "3 questions in Quick check (need 3+)",
+          "reason": "",
+          "fix": "",
+          "source": "code"
+        },
+        {
+          "id": "L1_ACCURATE",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\" / \"It reduces hallucination. But it does not remove it completely.\" / \"It is *not* the LLM. It only stores and searches.\" / \"The name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L2_NO_INVENTED_SPECIFICS",
+          "dimension": "accurate & grounded",
+          "passed": true,
+          "evidence": "\"a 2020 research paper by Lewis and others at Facebook AI Research\" / \"Students can borrow books for two weeks.\" (inside the labeled imaginary example)",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L3_COVERAGE",
+          "dimension": "covers the key points",
+          "passed": true,
+          "evidence": "\"Retrieval means finding... Augmented means made bigger or better... Generation means writing.\" / \"Problem 1: The knowledge cutoff... Problem 2: Private data... Problem 3: Hallucination.\" / \"A chunk is a small piece of a document... An embedding is a vector that shows the meaning of a text... We keep all embeddings in a vector database.\" / \"Step 4: Retrieve... Step 5: Augment... Step 6: Generate.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L4_JARGON_DEFINED",
+          "dimension": "clear, no unexplained jargon",
+          "passed": true,
+          "evidence": "\"AI means Artificial Intelligence.\" / \"LLM means Large Language Model.\" / \"This text is called its training data.\" / \"A vector is a list of numbers. An embedding is a vector that shows the meaning of a text.\" / \"A prompt is the text we send to the LLM.\" / \"It picks the top-k chunks. This means the best few matches.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L5_PLAIN_ENGLISH",
+          "dimension": "beginner-friendly language",
+          "passed": true,
+          "evidence": "\"Augmented means made bigger or better.\" / \"Grounding means basing the answer on real text.\" / \"Think of a map of ideas. Two shops close together on a city map are near each other.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L6_RUNNING_EXAMPLE",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"The system splits it into chunks... The system makes an embedding for each chunk. It stores them in the vector database. A student asks: 'Can I go to the library on Sunday?' 1. Retrieve: The system makes an embedding of the question... 2. Augment: The system builds a prompt... 3. Generate: The LLM reads the prompt. It writes: 'No. The library is closed on Sunday...'\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L7_ANALOGY_SOUND",
+          "dimension": "teaches by example",
+          "passed": true,
+          "evidence": "\"An LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L8_ORDER_NO_FORWARD_REFS",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"An LLM is one kind of AI program.\" (before RAG) / \"A vector is a list of numbers. An embedding is a vector...\" (before vector database) / \"A prompt is the text we send to the LLM.\" (defined in Step 5 before 'Important: ... goes only into the prompt')",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        },
+        {
+          "id": "L9_STANDALONE_AND_MISCONCEPTION",
+          "dimension": "coherent teaching flow",
+          "passed": true,
+          "evidence": "\"AI means Artificial Intelligence. These are computer programs that do tasks that usually need human thinking.\" / \"Mistake 1: 'RAG teaches the model new things.' This is wrong. RAG does not retrain the model. It does not change the model at all.\"",
+          "reason": "",
+          "fix": "",
+          "source": "llm"
+        }
+      ],
+      "failed": [],
+      "failed_ids": [],
+      "regressions": [],
+      "lesson": "# Introduction to RAG\n\n## 1. What is RAG?\n\n**AI** means Artificial Intelligence. These are computer programs that do tasks that usually need human thinking.\n\nAn **LLM** is one kind of AI program. It reads and writes text. LLM means Large Language Model. AI chat tools use an LLM to write their answers.\n\nRAG means **Retrieval-Augmented Generation**. Let us learn the three words.\n\n- **Retrieval** means finding. The system finds useful text from a collection of documents.\n- **Augmented** means made bigger or better. The system adds that text to your question.\n- **Generation** means writing. The LLM writes an answer.\n\nSo RAG is a method with three steps. First, find useful text. Second, add it to the question. Third, let the LLM write the answer.\n\nThe name comes from a 2020 research paper by Lewis and others at Facebook AI Research.\n\n**An everyday analogy: the open-book exam.**\nThink of a student in an exam. In a closed-book exam, the student uses only memory. In an open-book exam, the student looks at the right page and then writes the answer.\n\nAn LLM without RAG is like the closed-book student. An LLM with RAG is like the open-book student. The student does not become smarter. The student only reads the right page at the right time.\n\n## 2. Why do we need RAG?\n\nAn LLM learns from text. This text is called its **training data**. RAG helps with three problems.\n\n**Problem 1: The knowledge cutoff.**\nTraining data stops at one date. This date is called the **cutoff date**. The LLM does not know anything that happened after it.\n\n**Problem 2: Private data.**\nThe LLM has not seen your private files. These can be company files, school notices, or your own notes. It cannot answer questions about them.\n\n**Problem 3: Hallucination.**\nSometimes an LLM writes a false answer. It still sounds confident and correct. This is called **hallucination**.\n\nRAG gives the LLM real text to read before it answers. This is called **grounding**. Grounding means basing the answer on real text. It reduces hallucination. But it does not remove it completely.\n\nRAG has two more benefits:\n\n- To update knowledge, you only update your documents. You do not need to train the LLM again.\n- The system can show the pieces of text it used. People can then check the source.\n\n## 3. How RAG works, step by step\n\nRAG has two parts. The first part is done before anyone asks a question. The second part is done every time someone asks.\n\n### Part A: Indexing (preparing the documents)\n\n**Indexing** means preparing the documents and storing them. We do this so we can search them later. It has three steps.\n\n**Step 1: Split into chunks.**\nA **chunk** is a small piece of a document. A long document is cut into many chunks. Each chunk is short and has one main idea.\n\n**Step 2: Make an embedding for each chunk.**\nA **vector** is a list of numbers. An **embedding** is a vector that shows the meaning of a text. Texts with similar meaning get similar numbers.\n\nThink of a map of ideas. Two shops close together on a city map are near each other. In the same way, texts with similar meaning are placed close together on this imaginary map. Texts with different meaning are placed far apart.\n\n**Step 3: Store the embeddings.**\nWe keep all embeddings in a **vector database**. This is a special store. It is built to find similar embeddings quickly. It is *not* the LLM. It only stores and searches. It does not write answers.\n\n### Part B: Question time (runtime)\n\n**Runtime** means the time when the system is answering a question. A **query** is the user's question. At runtime, three steps happen.\n\n**Step 4: Retrieve.**\nThe system makes an embedding of the question. It compares this with the stored chunk embeddings. This is called **similarity search**. It picks the **top-k** chunks. This means the best few matches. Here *k* is just a number, such as \"the best three\".\n\nThe search uses meaning. So it does not need exactly the same words. A question can use different words from the document and still find the right chunk.\n\n**Step 5: Augment.**\nA **prompt** is the text we send to the LLM. The system joins the question and the chosen chunks in one prompt.\n\n**Step 6: Generate.**\nThe LLM reads the prompt. It writes an answer using the chunks as its source.\n\n**Important:** RAG does not change the LLM. It does not retrain it. The extra text goes only into the prompt, for that one question.\n\n## 4. One full example\n\nThis is an imaginary example. A school puts its notices into a RAG system.\n\n**Before questions (indexing):**\n\n1. The school has a long notice about the library. The system splits it into chunks.\n2. One chunk says: \"The library is open on weekdays and Saturday morning. It is closed on Sunday.\"\n3. Another chunk says: \"Students can borrow books for two weeks.\" *(This chunk is about borrowing, not about days.)*\n4. The system makes an embedding for each chunk. It stores them in the vector database.\n\n**A student asks:** \"Can I go to the library on Sunday?\"\n\n1. **Retrieve:** The system makes an embedding of the question. It searches the vector database. The chunk about library days is closest in meaning. It is chosen as a top match.\n2. **Augment:** The system builds a prompt. It has the student's question and the chosen chunk.\n3. **Generate:** The LLM reads the prompt. It writes: \"No. The library is closed on Sunday. It is open on weekdays and Saturday morning.\"\n\nThe LLM never saw this notice during its training. It still answered correctly. This is because RAG gave it the right text at the right time. The system can also show the chunk it used. The student can then check it.\n\n## 5. Common mistake to avoid\n\n**Mistake 1: \"RAG teaches the model new things.\"**\nThis is wrong. RAG does not retrain the model. It does not change the model at all. It only adds text to the prompt for each question.\n\nFine-tuning is a different method. It *does* change the model. It costs more. It is better for style and skills than for facts that change often.\n\n**Mistake 2: \"RAG always gives correct answers.\"**\nThis is also wrong. RAG reduces hallucination. It does not remove it. The quality of the answer depends on two things:\n\n- The quality of your documents. Wrong documents give wrong answers.\n- The retrieval step. If it finds the wrong chunk, the answer can be wrong.\n\n## 6. Key words (glossary)\n\n- **AI**: Artificial Intelligence. Computer programs that do tasks that usually need human thinking.\n- **LLM**: A kind of AI program that reads and writes text. The name means Large Language Model.\n- **RAG**: A method that finds useful text, adds it to the prompt, and then lets the LLM write an answer.\n- **Training data**: The text the LLM learned from. It stops at a cutoff date.\n- **Hallucination**: A false answer that sounds confident and correct.\n- **Grounding**: Basing the answer on real text that was found.\n- **Indexing**: Preparing documents and storing them, so they can be searched later.\n- **Chunk**: A small piece of a longer document.\n- **Vector**: A list of numbers.\n- **Embedding**: A vector that shows the meaning of a text.\n- **Vector database**: A special store that keeps embeddings and finds similar ones. It is not the LLM.\n- **Similarity search**: Finding the stored embeddings that are closest in meaning to the question.\n- **Top-k**: The best few matching chunks. The number k tells how many.\n- **Prompt**: The text we send to the LLM. It includes the question and the chosen chunks.\n- **Runtime**: The time when the system is answering a question.\n\n## 7. Quick check\n\n1. What do the three words in Retrieval-Augmented Generation mean?\n2. Name two problems that RAG helps to solve.\n3. What is the difference between a chunk and an embedding?\n4. Does RAG change or retrain the LLM? Explain in one sentence."
+    }
+  ],
+  "learned": [
+    "L4_JARGON_DEFINED",
+    "L5_PLAIN_ENGLISH",
+    "L5_PLAIN_ENGLISH"
+  ]
+}
